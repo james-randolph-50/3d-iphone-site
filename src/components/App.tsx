@@ -1,3 +1,4 @@
+import "../index.css"
 import Hero from "./Hero"
 import NavBar from "./NavBar"
 import Highlights from "./Highlights"
