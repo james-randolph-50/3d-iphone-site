@@ -5,7 +5,7 @@ import { explore1Img, explore2Img, exploreVideo } from '../utils';
 import gsap from 'gsap';
 
 const Features = () => {
-  const videoRef = useRef();
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useGSAP(() => {
     gsap.to('#exploreVideo', {
@@ -15,11 +15,11 @@ const Features = () => {
         start: '-10% bottom',
       },
       onComplete: () => {
-        videoRef.current.play();
+        videoRef.current?.play();
       }
     })
 
-    animateWithGsap('#features_title', { y:0, opacity:1})
+    animateWithGsap('#features_title', { y:0, opacity:1}, {})
     animateWithGsap(
       '.g_grow',
       { scale: 1, opacity: 1, ease: 'power1' },
@@ -27,7 +27,8 @@ const Features = () => {
     );
     animateWithGsap(
       '.g_text',
-      {y:0, opacity: 1,ease: 'power2.inOut',duration: 1}
+      {y:0, opacity: 1,ease: 'power2.inOut',duration: 1},
+      {}
     )
   }, []);
 
