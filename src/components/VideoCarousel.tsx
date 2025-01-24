@@ -29,10 +29,10 @@ const VideoCarousel = () => {
     gsap.to("#slider", {
       transform: `translateX(${-100 * videoId}%)`,
       duration: 2,
-      ease: "power2.inOut", // show visualizer https://gsap.com/docs/v3/Eases
+      ease: "power2.inOut",
     });
 
-    // video animation to play the video when it is in the view
+    
     gsap.to("#video", {
       scrollTrigger: {
         trigger: "#video",
@@ -72,7 +72,6 @@ const VideoCarousel = () => {
                   : "4vw", // laptop
             });
 
-            // set the background color of the progress bar
             gsap.to(span[videoId], {
               width: `${currentProgress}%`,
               backgroundColor: "white",
@@ -80,7 +79,6 @@ const VideoCarousel = () => {
           }
         },
 
-        // when the video is ended, replace the progress bar with the indicator and change the background color
         onComplete: () => {
           if (isPlaying) {
             gsap.to(videoDivRef.current[videoId], {

@@ -2,6 +2,7 @@ import "../index.css"
 import Hero from "./Hero"
 import NavBar from "./NavBar"
 import Highlights from "./Highlights"
+import Model from "./Model"
 
 
 const App = () => {
@@ -10,6 +11,7 @@ const App = () => {
      <NavBar />
       <Hero />
       <Highlights />
+      <Model />
     </main>
   )
 }
