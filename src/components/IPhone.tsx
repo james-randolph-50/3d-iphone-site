@@ -7,29 +7,47 @@ Title: Apple iPhone 15 Pro Max Black
 */
 
 import * as THREE from 'three';
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import { useGLTF, useTexture } from "@react-three/drei";
+import { GLTF } from 'three-stdlib';
 
-function Model(props) {
-  const { nodes, materials } = useGLTF("/models/scene.glb");
+type GLTFResult = GLTF & {
+  nodes: {
+    [key: string]: THREE.Mesh;
+  };
+  materials: {
+    [key: string]: THREE.Material;
+  };
+};
+
+interface ModelProps {
+  item: {
+    color: string[];
+    img: string;
+  };
+  [key: string]: any;
+}
+
+function Model(props: ModelProps) {
+  const { nodes, materials } = useGLTF("/models/scene.glb") as GLTFResult;
 
   const texture = useTexture(props.item.img);
 
-    useEffect(() => {
-      Object.entries(materials).map((material) => {
-        // these are the material names that can't be changed color
-        if (
-          material[0] !== "zFdeDaGNRwzccye" &&
-          material[0] !== "ujsvqBWRMnqdwPx" &&
-          material[0] !== "hUlRcbieVuIiOXG" &&
-          material[0] !== "jlzuBkUzuJqgiAK" &&
-          material[0] !== "xNrofRCqOXXHVZt"
-        ) {
-          material[1].color = new THREE.Color(props.item.color[0]);
-        }
-        material[1].needsUpdate = true;
-      });
-    }, [materials, props.item]);
+  useEffect(() => {
+    Object.entries(materials).map((material) => {
+      // these are the material names that can't be changed color
+      if (
+        material[0] !== "zFdeDaGNRwzccye" &&
+        material[0] !== "ujsvqBWRMnqdwPx" &&
+        material[0] !== "hUlRcbieVuIiOXG" &&
+        material[0] !== "jlzuBkUzuJqgiAK" &&
+        material[0] !== "xNrofRCqOXXHVZt"
+      ) {
+        material[1].color = new THREE.Color(props.item.color[0]);
+      }
+      material[1].needsUpdate = true;
+    });
+  }, [materials, props.item]);
   
   return (
     <group {...props} dispose={null}>
