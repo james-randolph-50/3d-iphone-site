@@ -7,13 +7,20 @@ import { useEffect, useRef, useState } from "react";
 import { hightlightsSlides } from "../constants";
 import { pauseImg, playImg, replayImg } from "../utils";
 
-const VideoCarousel = () => {
-  const videoRef = useRef([]);
-  const videoSpanRef = useRef([]);
-  const videoDivRef = useRef([]);
+interface VideoState {
+  isEnd: boolean;
+  startPlay: boolean;
+  videoId: number;
+  isLastVideo: boolean;
+  isPlaying: boolean;
+}
 
-  // video and indicator
-  const [video, setVideo] = useState({
+const VideoCarousel = () => {
+  const videoRef = useRef<(HTMLVideoElement | null)[]>([]);
+  const videoSpanRef = useRef<(HTMLSpanElement | null)[]>([]);
+  const videoDivRef = useRef<(HTMLSpanElement | null)[]>([]);
+
+  const [video, setVideo] = useState<VideoState>({
     isEnd: false,
     startPlay: false,
     videoId: 0,
@@ -21,7 +28,7 @@ const VideoCarousel = () => {
     isPlaying: false,
   });
 
-  const [loadedData, setLoadedData] = useState([]);
+  const [loadedData, setLoadedData] = useState<HTMLVideoElement[]>([]);
   const { isEnd, isLastVideo, startPlay, videoId, isPlaying } = video;
 
   useGSAP(() => {
@@ -123,11 +130,12 @@ const VideoCarousel = () => {
     }
   }, [startPlay, videoId, isPlaying, loadedData]);
 
-  // vd id is the id for every video until id becomes number 3
-  const handleProcess = (type, i) => {
+  const handleProcess = (type: string, i?: number) => {
     switch (type) {
       case "video-end":
-        setVideo((pre) => ({ ...pre, isEnd: true, videoId: i + 1 }));
+        if (i !== undefined) {
+          setVideo((pre) => ({ ...pre, isEnd: true, videoId: i + 1 }));
+        }
         break;
 
       case "video-last":
@@ -139,9 +147,6 @@ const VideoCarousel = () => {
         break;
 
       case "pause":
-        setVideo((pre) => ({ ...pre, isPlaying: !pre.isPlaying }));
-        break;
-
       case "play":
         setVideo((pre) => ({ ...pre, isPlaying: !pre.isPlaying }));
         break;
@@ -151,7 +156,8 @@ const VideoCarousel = () => {
     }
   };
 
-  const handleLoadedMetaData = (i, e) => setLoadedData((pre) => [...pre, e]);
+  const handleLoadedMetaData = (i: number, e: HTMLVideoElement) => 
+    setLoadedData((pre) => [...pre, e]);
 
   return (
     <>
@@ -172,12 +178,12 @@ const VideoCarousel = () => {
                   onEnded={() =>
                     i !== 3
                       ? handleProcess("video-end", i)
-                      : handleProcess("video-last")
+                      : handleProcess("video-last", undefined)
                   }
                   onPlay={() =>
                     setVideo((pre) => ({ ...pre, isPlaying: true }))
                   }
-                  onLoadedMetadata={(e) => handleLoadedMetaData(i, e)}
+                  onLoadedMetadata={(e) => handleLoadedMetaData(i, e.target as HTMLVideoElement)}
                 >
                   <source src={list.video} type="video/mp4" />
                 </video>
@@ -217,10 +223,10 @@ const VideoCarousel = () => {
             alt={isLastVideo ? "replay" : !isPlaying ? "play" : "pause"}
             onClick={
               isLastVideo
-                ? () => handleProcess("video-reset")
+                ? () => handleProcess("video-reset", undefined)
                 : !isPlaying
-                ? () => handleProcess("play")
-                : () => handleProcess("pause")
+                ? () => handleProcess("play", undefined)
+                : () => handleProcess("pause", undefined)
             }
           />
         </button>
